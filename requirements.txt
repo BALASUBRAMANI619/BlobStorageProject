@@ -1,0 +1,6 @@
+azure-core
+azure-identity
+azure-keyvault-certificates
+azure-keyvault-keys
+azure-keyvault-secrets
+azure-storage-blob

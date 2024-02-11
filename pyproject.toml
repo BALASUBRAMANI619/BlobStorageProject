@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "repl-nix-blobstorageproject"
+version = "0.1.0"
+description = ""
+authors = ["Replit user <<>>"]
+readme = "README.md"
+packages = [{include = "repl_nix_blobstorageproject"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+flask = "^3.0.2"
+azure-identity = "^1.15.0"
+azure-keyvault-secrets = "^4.7.0"
+azure-storage-blob = "^12.19.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
