@@ -18,6 +18,7 @@ secret_name = "myfirstkey"
 credentials = ClientSecretCredential(client_id=client_id,
                                      client_secret=client_secret,
                                      tenant_id=tenant_id)
+
 # create a secret client object
 secret_client = SecretClient(vault_url=vault_url, credential=credentials)
 # retrieve the secret value from key vault
@@ -63,10 +64,20 @@ def index():
 @app.route('/next_page')
 def next():
   blob_names = []
+  blob_urls = []
+
   for blob_data in container_client.list_blobs():
-    blob_names.append(blob_data.name)
-    print(f"blob_data.name: {blob_data.name}")
-  return render_template("upload.html", blob_names=blob_names)
+    blob_name = blob_data.name
+    blob_names.append(blob_name)
+    blob_client = container_client.get_blob_client(blob_name)
+    print(f"blob_name: {blob_name}")
+    blob_url = blob_client.url
+    print(f"blob_url: {blob_urls}")
+    blob_urls.append(blob_url)
+
+  return render_template("upload.html",
+                         blob_names=blob_names,
+                         blob_urls=blob_urls)
 
 
 @app.route('/upload', methods=['POST'])

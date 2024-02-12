@@ -18,12 +18,15 @@
   <p>=====================================</p>
   <p>=====================================</p>
   <div class="container">
-    <ul>
-        {% for blob in blob_names %}
-            <li>{{ blob }}</li>
-        {% endfor %}
-    </ul>
-</div>
+      <h3>List of Blobs in Container</h3>
+      <ul>
+          {% for index in range(blob_names|length) %}
+              
+              <li><a href="{{ blob_urls[index] }}">{{ blob_names[index] }}</a></li>
+          {% endfor %}
+      </ul>
+  </div>
+
 
 </body>
 </html>
