@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, request, url_for
 from azure.identity import ClientSecretCredential
 from azure.keyvault.secrets import SecretClient
 from azure.identity import DefaultAzureCredential
@@ -27,17 +27,19 @@ blob_credentials = DefaultAzureCredential()
 container_name = "fileuploadproject"
 blob_name = "aaa.txt"
 
+# Set client to access Azure Storage container
+blob_service_client = BlobServiceClient(account_url=account_url,
+                                        credential=blob_credentials)
+
+# Get the container client
+container_client = blob_service_client.get_container_client(
+    container=container_name)
+
 
 @app.route("/")
-def route():
+def index():
   try:
-    # Set client to access Azure Storage container
-    blob_service_client = BlobServiceClient(account_url=account_url,
-                                            credential=blob_credentials)
 
-    # Get the container client
-    container_client = blob_service_client.get_container_client(
-        container=container_name)
     # download blob data
     blob_client = container_client.get_blob_client(blob=blob_name)
 
@@ -56,6 +58,33 @@ def route():
                          success_message=success_message,
                          data=data,
                          secret=secret)
+
+
+@app.route('/next_page')
+def next():
+  blob_names = []
+  for blob_data in container_client.list_blobs():
+    blob_names.append(blob_data.name)
+    print(f"blob_data.name: {blob_data.name}")
+  return render_template("upload.html", blob_names=blob_names)
+
+
+@app.route('/upload', methods=['POST'])
+def upload():
+
+  if request.method == 'POST':
+    # Access the uploaded file from the request
+    uploaded_file = request.files['file']
+
+    # Generate a unique blob name (you can modify this as needed)
+    blob_name = f"uploaded_files/{uploaded_file.filename}"
+
+    # Create a BlobClient and upload the file
+    blob_client = container_client.get_blob_client(blob_name)
+    blob_client.upload_blob(uploaded_file.stream.read(), overwrite=True)
+    return redirect(url_for('next'))
+
+  return "Hello"
 
 
 if __name__ == "__main__":
