@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Blob</title>
+</head>
+<body>
+    <h1>Viewing Blob: {{ blob_name }}</h1>
+    
+    <p><a href="{{ blob_url }}">Download </a></p>
+    <p>Blob type: {{ properties.blob_type }}</p>
+    <p>Blob size: {{ properties.size }}</p>
+    <p>Content type: {{ properties.content_settings.content_type }}</p>
+    <p>Content language: {{ properties.content_settings.content_language }}</p>
+    <p>share with external user </p>
+    
+
+    <p><a href="{{ url_for('next') }}">Back to Blob List</a></p>
+</body>
+</html>

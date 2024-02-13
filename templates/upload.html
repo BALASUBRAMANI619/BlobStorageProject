@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload Form</title>
-</head>
-<body>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='header.css') }}">
+
+    <title><b>Blob Storage</b></title>
+  </head>
+  <body>
+    {% include 'nav_bar.html' %}
     <h2>File Upload Form</h2>
 
     <form action="/upload" method="post" enctype="multipart/form-data">
@@ -17,15 +20,17 @@
 
   <p>=====================================</p>
   <p>=====================================</p>
-  <div class="container">
+    <div class="container">  
       <h3>List of Blobs in Container</h3>
       <ul>
           {% for index in range(blob_names|length) %}
               
-              <li><a href="{{ blob_urls[index] }}">{{ blob_names[index] }}</a></li>
+        <li><a href="{{ url_for('view_blob', blob_name=blob_names[index]) }}">{{ blob_names[index] }}</a>
+        </li>
+
           {% endfor %}
       </ul>
-  </div>
+    </div>
 
 
 </body>

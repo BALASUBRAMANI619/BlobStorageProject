@@ -1,9 +1,10 @@
-from flask import Flask, render_template, redirect, request, url_for
+from flask import Flask, render_template, redirect, request, url_for, jsonify
 from azure.identity import ClientSecretCredential
 from azure.keyvault.secrets import SecretClient
 from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient
 import os
+from urllib.parse import unquote
 
 app = Flask(__name__)
 
@@ -70,9 +71,9 @@ def next():
     blob_name = blob_data.name
     blob_names.append(blob_name)
     blob_client = container_client.get_blob_client(blob_name)
-    print(f"blob_name: {blob_name}")
+    #print(f"blob_name: {blob_name}")
     blob_url = blob_client.url
-    print(f"blob_url: {blob_urls}")
+    #print(f"blob_url: {blob_urls}")
     blob_urls.append(blob_url)
 
   return render_template("upload.html",
@@ -88,7 +89,10 @@ def upload():
     uploaded_file = request.files['file']
 
     # Generate a unique blob name (you can modify this as needed)
-    blob_name = f"uploaded_files/{uploaded_file.filename}"
+    #blob_name = f"uploaded_files/{uploaded_file.filename}"
+
+    # Generate a unique blob name without a specific folder
+    blob_name = uploaded_file.filename
 
     # Create a BlobClient and upload the file
     blob_client = container_client.get_blob_client(blob_name)
@@ -97,6 +101,25 @@ def upload():
 
   return "Hello"
 
+
+@app.route('/view_blob/<blob_name>')
+def view_blob(blob_name):
+  blob_client = container_client.get_blob_client(blob_name)
+  blob_url = blob_client.url
+  properties = blob_client.get_blob_properties()
+
+  return render_template("view_blob.html",
+                         blob_name=blob_name,
+                         blob_url=blob_url,
+                         properties=properties)
+
+
+"""""
+@app.route('/delete_blob/<blob_name>')
+def delete_blob(blob_name):
+  blob_client = container_client.get_blob_client(blob_name)
+  blob_client.delete_blob()
+""" ""
 
 if __name__ == "__main__":
   app.run(host="0.0.0.0", port=8080)

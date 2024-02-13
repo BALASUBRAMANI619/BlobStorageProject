@@ -1,6 +1,12 @@
 <Html>
-  <head></head>
+  <head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='header.css') }}">
+
+    <title><b>Blob Storage</b></title>
+  </head>
   <body>
+    {% include 'nav_bar.html' %}
+
     <h1>Hello, World..!!!</h1>
     <h2>Azure Blob Storage:</h2>
     <div>
