@@ -1,0 +1,22 @@
+<Html>
+  <head>
+    <title><b>Blob Storage</b></title>
+    {% include 'bootstrap.html' %}
+  </head>
+  <body>
+    {% include 'nav_bar.html' %}
+
+    <input type="url" id="url_SAS" value="{{ sharelink }}">
+    <button onclick="copyToClipboard()">Copy</button><br>
+    <p id="copied_url"></p>
+
+    <script>
+      function copyToClipboard() {
+        let copyURL = document.getElementById("url_SAS");
+        copyURL.select();
+        document.execCommand("copy");
+        document.getElementById("copied_url").innerHTML = "Copied the URL: " + copyURL.value;
+      }
+    </script>
+  </body>
+</Html>

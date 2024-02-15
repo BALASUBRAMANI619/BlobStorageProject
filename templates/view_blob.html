@@ -1,21 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Blob</title>
-</head>
-<body>
-    <h1>Viewing Blob: {{ blob_name }}</h1>
-    
-    <p><a href="{{ blob_url }}">Download </a></p>
-    <p>Blob type: {{ properties.blob_type }}</p>
-    <p>Blob size: {{ properties.size }}</p>
-    <p>Content type: {{ properties.content_settings.content_type }}</p>
-    <p>Content language: {{ properties.content_settings.content_language }}</p>
-    <p>share with external user </p>
-    
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% include 'bootstrap.html' %}
+      <title>View Blob</title>
+  </head>
+  <body>
+    {% include 'nav_bar.html' %}
+    <div class="container">
+  <div class="row">
+      <div class="col-md">
+      <h2>Viewing Blob: {{ blob_name }}</h2>
+      
+      <p>
+            <a href="{{ blob_url }}" target="_blank">Download</a>&nbsp;
+            <a href="{{ url_for('delete_blob', blob_name=blob_name) }}" onclick="return confirm('Are you sure you want to delete this blob?')">Delete file</a>&nbsp;
+        <button class="btn btn-primary" onclick="toggleColumn()">share externally</button>
+        </p>
+  
+  
+      
+      <p>Blob type: {{ properties.blob_type }}</p>
+      <p>Blob size: {{ properties.size }}</p>
+      <p>Content type: {{ properties.content_settings.content_type }}</p>
+      <p>Content language: {{ properties.content_settings.content_language }}</p>
+      <p>share with external user </p>
+        <div id="hide-container" style="display: none;">{{ sharelink }}</div>
+              
+  
+      <p><a href="{{ url_for('next') }}">Back to Blob List</a></p>
+      </div>
+    <div class="col-md p-3 mb-2 bg-secondary text-white" id="column2" style="display: none;">
+        <!-- Content for column 2 -->
+        <h1>{{ blob_name }}</h1>
 
-    <p><a href="{{ url_for('next') }}">Back to Blob List</a></p>
-</body>
-</html>
+          <form action="/share_blob" method="post">
+    <label>File Name : </label><h4>{{ blob_name }}</h4>
+    <input type="hidden" name="blob_name" value="{{ blob_name }}">
+    <label>Permission : </label>
+    <select name="permission" id="permission">
+        <option value="read">read</option>
+        <option value="write">write</option>
+        <option value="WRITE-DELETE">WRITE/DELETE</option>
+    </select><br>
+
+    <label for="expiry">Link Expiry (in days) : </label>
+    <input type="number" name="expiry" id="expiry" value="7"><br>
+
+    <input type="submit" value="Share" id="link">
+</form><br><br>
+    
+      
+    </div>
+      </div>
+    </div>
+    <script>
+        function toggleColumn() {
+            var column2 = document.getElementById('column2');
+            if (column2.style.display === 'none') {
+                column2.style.display = 'block';
+            } else {
+                column2.style.display = 'none';
+            }
+        }
+
+        function toggleLink() {
+          var link = document.getElementById('hide-container');
+          if (column2.style.display === 'none') {
+              column2.style.display = 'block';
+          } else {
+              column2.style.display = 'none';
+          }
+        }
+    </script>
+  </body>
+  </html>
+  
