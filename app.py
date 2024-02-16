@@ -1,11 +1,12 @@
-from flask import Flask, render_template, redirect, request, url_for, jsonify
+from flask import Flask, render_template, redirect, request, url_for
 from azure.identity import ClientSecretCredential
 from azure.keyvault.secrets import SecretClient
 from azure.identity import DefaultAzureCredential
-from azure.storage.blob import BlobServiceClient, BlobSasPermissions, generate_blob_sas, UserDelegationKey
+from azure.storage.blob import BlobServiceClient, BlobSasPermissions, generate_blob_sas
 from datetime import datetime, timedelta
 from urllib.parse import quote
 import os
+#from app_upload import generate_SAS
 #
 
 app = Flask(__name__)
@@ -43,7 +44,7 @@ container_client = blob_service_client.get_container_client(
 
 @app.route("/")
 def index():
-  blob_name = "kkk.txt"
+  blob_name = "aaa.txt"
   try:
 
     # download blob data
@@ -127,32 +128,42 @@ def delete_blob(blob_name):
 
 @app.route('/share_blob', methods=['POST'])
 def share_blob():
+  if request.method == 'POST':
+    permission = request.form.get('permission')
+    if permission == "read":
+      blob_permissions = BlobSasPermissions(read=True)
+    elif permission == "write":
+      blob_permissions = BlobSasPermissions(write=True)
+    elif permission == "delete":
+      blob_permissions = BlobSasPermissions(delete=True)
+    else:
+      # Default to read-only if the selected option is not recognized
+      blob_permissions = BlobSasPermissions(read=True)
 
-  permission = request.form.get('permission')
-  if permission is not None:
-    permission = permission.lower()
-  #expiry_int = request.form.get('expiry')
-  blob = request.form.get('blob_name')
-  print("blob name : ", blob)
+    blob = request.form.get('blob_name')
+    print("blob name : ", blob)
 
-  # Get a BlobClient for the specific blob
-  blob_client = blob_service_client.get_blob_client(container_name, blob)
-  sas_token = generate_SAS(blob, permission)
-  #print("SAS Token : ", sas_token)
-  # Construct the complete URL with the SAS token
-  blob_url_with_sas = f"{blob_client.url}?{sas_token}"
-  print("blob_url_with_sas : ", blob_url_with_sas)
-  return render_template("share_blob.html", sharelink=blob_url_with_sas)
+    # Get a BlobClient for the specific blob
+    blob_client = blob_service_client.get_blob_client(container_name, blob)
+    sas_token = generate_SAS(blob, blob_permissions)
+    print("permission value  ib share_blob route: ", blob_permissions)
+    #print("SAS Token : ", sas_token)
+    # Construct the complete URL with the SAS token
+    blob_url_with_sas = f"{blob_client.url}?{sas_token}"
+    print("blob_url_with_sas : ", blob_url_with_sas)
+    return render_template("share_blob.html", sharelink=blob_url_with_sas)
+
+  return render_template("share_blob.html", sharelink=None)
 
 
-def generate_SAS(blob, permission):
+def generate_SAS(blob, blob_permissions):
   #start_time = datetime.now()
   #expiry_time = start_time + timedelta(days=7)
-  print("permisson value : ", permission)
-  print(f"data type of permission is {type(permission)}")
+  print("permisson value : ", blob_permissions)
+  print(f"data type of acccess_level is {type(blob_permissions)}")
   expiration = datetime.utcnow() + timedelta(hours=1)
   print("expiry time : ", expiration)
-  print(f"data tyep of expiry_time is {type(expiration)}")
+  print(f"data type of expiry_time is {type(expiration)}")
   # Convert expiry_time to ISO format string
   expiry_time_str = expiration.isoformat()
 
@@ -166,7 +177,7 @@ def generate_SAS(blob, permission):
       account_key=None,  # Set account_key to None when using Managed Identity
       user_delegation_key=
       key_info,  # Use the user delegation key from BlobServiceClient
-      permission=BlobSasPermissions(permission=True),
+      permission=blob_permissions,
       expiry=expiry_time_str)
   # URL encode the SAS token
   encoded_sas_token = quote(SAS_Token)

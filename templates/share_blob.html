@@ -6,9 +6,14 @@
   <body>
     {% include 'nav_bar.html' %}
 
-    <input type="url" id="url_SAS" value="{{ sharelink }}">
+    <div class="container">
+    <h1>Share Blob</h1>
+    <input type="text" id="url_SAS" value="{{ sharelink }}" readonly>
     <button onclick="copyToClipboard()">Copy</button><br>
     <p id="copied_url"></p>
+    <br>
+    
+    </div>
 
     <script>
       function copyToClipboard() {

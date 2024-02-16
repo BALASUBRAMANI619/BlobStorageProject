@@ -17,18 +17,17 @@
             <a href="{{ blob_url }}" target="_blank">Download</a>&nbsp;
             <a href="{{ url_for('delete_blob', blob_name=blob_name) }}" onclick="return confirm('Are you sure you want to delete this blob?')">Delete file</a>&nbsp;
         <button class="btn btn-primary" onclick="toggleColumn()">share externally</button>
-        </p>
-  
-  
-      
+        </p>      
       <p>Blob type: {{ properties.blob_type }}</p>
       <p>Blob size: {{ properties.size }}</p>
       <p>Content type: {{ properties.content_settings.content_type }}</p>
       <p>Content language: {{ properties.content_settings.content_language }}</p>
       <p>share with external user </p>
-        <div id="hide-container" style="display: none;">{{ sharelink }}</div>
-              
-  
+        <div id="hide-container" style="display: none;">{{ sharelink }}
+              <input type="text" id="url_SAS" value="{{ sharelink }}" readonly>
+              <button onclick="copyToClipboard()">Copy</button><br>
+              <p id="copied_url"></p>
+        </div>
       <p><a href="{{ url_for('next') }}">Back to Blob List</a></p>
       </div>
     <div class="col-md p-3 mb-2 bg-secondary text-white" id="column2" style="display: none;">
@@ -42,13 +41,15 @@
     <select name="permission" id="permission">
         <option value="read">read</option>
         <option value="write">write</option>
-        <option value="WRITE-DELETE">WRITE/DELETE</option>
+        <option value="delete">delete</option>
+        <option value="pikachu">pikachu</option>
     </select><br>
 
     <label for="expiry">Link Expiry (in days) : </label>
     <input type="number" name="expiry" id="expiry" value="7"><br>
 
-    <input type="submit" value="Share" id="link">
+    <input type="submit" value="Share" id="link"><br><br>
+            
 </form><br><br>
     
       
