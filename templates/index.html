@@ -1,28 +1,39 @@
-<Html>
-  <head>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='header.css') }}">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='header.css') }}">
 
     <title><b>Blob Storage</b></title>
-    {% include 'bootstrap.html' %}
+  {% include 'bootstrap.html' %}
   </head>
   <body>
     {% include 'nav_bar.html' %}
+    <div class="container">
+    <h2>File Upload Form</h2>
 
-    <h1>Hello, World..!!!</h1>
-    <h2>Azure Blob Storage:</h2>
-    <div>
-        <h1>Welcome to Azure Blob Storage</h1>
-        <p>This is a simple Flask web application that uses Blob Storage to read data</p>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <label for="file">Choose a file:</label>
+        <input type="file" name="file" id="file" >
+        <br>
+        <input type="submit" value="Upload">
+    </form>
 
-        <h2>Azure Key Vault Secret:</h2>
-        <p><strong>Secret Value:</strong> {{ secret.value }}</p>
-        <p>successfull : {{success_message }}</p>
-        <p>Able to read data : {{ data }}</p>
-      <div>
-          <a href="{{ url_for('next') }}">Upload Page</a>
-      </div>
-    
-        
+  <p>=====================================</p>
+  <p>=====================================</p>
+    <div class="container">  
+      <h3>List of Blobs in Container</h3>
+      <ul>
+          {% for index in range(blob_names|length) %}
+              
+        <li><a href="{{ url_for('view_blob', blob_name=blob_names[index]) }}">{{ blob_names[index] }}</a>
+        </li>
+
+          {% endfor %}
+      </ul>
     </div>
-  </body>
-</Html>
+
+    </div>
+</body>
+</html>

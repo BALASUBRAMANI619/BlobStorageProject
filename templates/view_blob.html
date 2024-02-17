@@ -28,7 +28,7 @@
               <button onclick="copyToClipboard()">Copy</button><br>
               <p id="copied_url"></p>
         </div>
-      <p><a href="{{ url_for('next') }}">Back to Blob List</a></p>
+      <p><a href="{{ url_for('index') }}">Back to Blob List</a></p>
       </div>
     <div class="col-md p-3 mb-2 bg-secondary text-white" id="column2" style="display: none;">
         <!-- Content for column 2 -->
@@ -42,7 +42,7 @@
         <option value="read">read</option>
         <option value="write">write</option>
         <option value="delete">delete</option>
-        <option value="pikachu">pikachu</option>
+        
     </select><br>
 
     <label for="expiry">Link Expiry (in days) : </label>

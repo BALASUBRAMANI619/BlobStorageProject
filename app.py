@@ -42,33 +42,8 @@ container_client = blob_service_client.get_container_client(
     container=container_name)
 
 
-@app.route("/")
+@app.route('/')
 def index():
-  blob_name = "aaa.txt"
-  try:
-
-    # download blob data
-    blob_client = container_client.get_blob_client(blob=blob_name)
-
-    data = blob_client.download_blob().readall().decode("utf-8")
-
-    print(f"datatype of the data is {type(data)}")
-
-    # If the above lines executed without errors, print success message
-    success_message = "Successfully connected to Azure Storage and container."
-  except Exception as e:
-    # If an exception occurs, print the error message
-    print(f"Error: {e}")
-    data = "Error: Failed to connect to Azure Storage."
-    success_message = None
-  return render_template("index.html",
-                         success_message=success_message,
-                         data=data,
-                         secret=secret)
-
-
-@app.route('/next_page')
-def next():
   blob_names = []
   blob_urls = []
 
@@ -81,7 +56,7 @@ def next():
     #print(f"blob_url: {blob_urls}")
     blob_urls.append(blob_url)
 
-  return render_template("upload.html",
+  return render_template("index.html",
                          blob_names=blob_names,
                          blob_urls=blob_urls)
 
@@ -102,7 +77,7 @@ def upload():
     # Create a BlobClient and upload the file
     blob_client = container_client.get_blob_client(blob_name)
     blob_client.upload_blob(uploaded_file.stream.read(), overwrite=True)
-    return redirect(url_for('next'))
+    return redirect(url_for('index'))
 
   return "Hello"
 
@@ -123,7 +98,7 @@ def view_blob(blob_name):
 def delete_blob(blob_name):
   blob_client = container_client.get_blob_client(blob_name)
   blob_client.delete_blob()
-  return redirect(url_for('next'))
+  return redirect(url_for('index'))
 
 
 @app.route('/share_blob', methods=['POST'])
