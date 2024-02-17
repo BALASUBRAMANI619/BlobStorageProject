@@ -48,6 +48,13 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+      
+    env:  # Add this 'env' field to set environment variables
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      AZURE_VAULT_URL: ${{ secrets.AZURE_VAULT_URL }}
+      AZURE_STORAGE_URL: ${{ secrets.AZURE_STORAGE_URL }}
 
     steps:
       - name: Download artifact from build job
